@@ -1,10 +1,32 @@
 @import "tailwindcss";
 
-/* Твої додаткові стилі */
+/* Підключення Variable шрифту */
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/Montserrat-VariableFont_wght.ttf') format('truetype');
+  /* Задаємо діапазон ваг, який підтримує шрифт */
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
+}
+
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  @apply bg-white text-black;
+  background-color: #0f172a;
+  color: #f8fafc;
+  /* Застосовуємо шрифт */
+  font-family: 'Montserrat', sans-serif !important;
+}
+
+/* Переконуємося, що всі елементи використовують новий шрифт */
+input, textarea, button, select {
+  font-family: 'Montserrat', sans-serif !important;
+}
+
+/* Якщо хочеш, щоб заголовки були жирнішими за замовчуванням */
+h1, h2, h3, h4 {
+  font-weight: 700;
 }

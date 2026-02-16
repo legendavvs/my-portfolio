@@ -15,7 +15,7 @@ export default function LoginPage() {
         e.preventDefault();
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            router.push("/"); // Після успіху кидаємо на головну
+            router.push("/");
         } catch (err) {
             setError("Невірний логін або пароль");
             console.error(err);
@@ -23,38 +23,41 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <form onSubmit={handleLogin} className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
-                <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Вхід для Адміна</h1>
+        // Темний фон на весь екран
+        <div className="min-h-screen flex items-center justify-center bg-slate-900 px-4">
 
-                {error && <p className="text-red-500 text-sm mb-4 text-center">{error}</p>}
+            {/* Темна картка форми */}
+            <form onSubmit={handleLogin} className="bg-slate-800 p-8 rounded-2xl shadow-xl border border-slate-700 w-full max-w-md">
+                <h1 className="text-2xl font-bold mb-6 text-center text-white">Вхід для Адміна</h1>
+
+                {error && <p className="text-red-400 text-sm mb-4 text-center bg-red-400/10 p-2 rounded">{error}</p>}
 
                 <div className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Email</label>
+                        <label className="block text-sm font-medium text-slate-300 mb-1">Email</label>
                         <input
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="mt-1 w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                            className="w-full p-3 bg-slate-900 border border-slate-600 rounded-lg text-white focus:border-sky-500 focus:ring-1 focus:ring-sky-500 outline-none transition"
                             required
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Пароль</label>
+                        <label className="block text-sm font-medium text-slate-300 mb-1">Пароль</label>
                         <input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="mt-1 w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                            className="w-full p-3 bg-slate-900 border border-slate-600 rounded-lg text-white focus:border-sky-500 focus:ring-1 focus:ring-sky-500 outline-none transition"
                             required
                         />
                     </div>
 
                     <button
                         type="submit"
-                        className="w-full bg-black text-white py-2 rounded-lg font-medium hover:bg-gray-800 transition"
+                        className="w-full bg-sky-600 text-white py-3 rounded-lg font-bold hover:bg-sky-500 transition shadow-lg shadow-sky-900/20 mt-2"
                     >
                         Увійти
                     </button>

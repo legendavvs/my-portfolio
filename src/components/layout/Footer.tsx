@@ -48,7 +48,7 @@ export default function Footer({ isAdmin }: { isAdmin: boolean }) {
     };
 
     return (
-        <footer className="bg-black text-white py-12 border-t border-gray-800">
+        <footer id="contact" className="bg-black text-white py-12 border-t border-gray-800">
             <div className="max-w-7xl mx-auto px-6 md:px-20 flex flex-col md:flex-row justify-between items-center gap-8">
 
                 {/* ЛІВА ЧАСТИНА: Копірайт */}

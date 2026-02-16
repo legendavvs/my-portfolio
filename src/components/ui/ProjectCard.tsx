@@ -16,11 +16,9 @@ interface ProjectCardProps {
 export default function ProjectCard({ data, isAdmin }: ProjectCardProps) {
     const [project, setProject] = useState(data);
 
-    // Функція збереження конкретного поля
     const handleSave = async (key: keyof Project, value: string) => {
         const newData = { ...project, [key]: value };
-        setProject(newData); // Оновлюємо візуально
-
+        setProject(newData);
         try {
             const docRef = doc(db, "projects", project.id);
             await updateDoc(docRef, { [key]: value });
@@ -29,7 +27,6 @@ export default function ProjectCard({ data, isAdmin }: ProjectCardProps) {
         }
     };
 
-    // Функція видалення проекту
     const handleDelete = async () => {
         if (confirm("Точно видалити цей проект?")) {
             try {
@@ -41,18 +38,19 @@ export default function ProjectCard({ data, isAdmin }: ProjectCardProps) {
     };
 
     return (
-        <div className="group relative bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full">
+        // БУЛО: bg-white -> СТАЛО: bg-slate-800 (Темна картка)
+        // БУЛО: border-gray-100 -> СТАЛО: border-slate-700 (Темна рамка)
+        <div className="group relative bg-slate-800 rounded-2xl shadow-lg shadow-black/20 border border-slate-700 hover:shadow-2xl hover:border-sky-500/50 transition-all duration-300 overflow-hidden flex flex-col h-full">
 
-            {/* 1. Картинка проекту */}
-            <div className="aspect-video w-full bg-gray-50 relative">
+            {/* 1. Картинка (фон заглушки змінив на темний bg-slate-900) */}
+            <div className="aspect-video w-full bg-slate-900 relative">
                 <ImageUploader
                     currentImageUrl={project.imageUrl}
                     isEditing={isAdmin}
                     onSave={(url) => handleSave("imageUrl", url)}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
                 />
 
-                {/* Кнопка видалення (Тільки для адміна) */}
                 {isAdmin && (
                     <button
                         onClick={handleDelete}
@@ -67,8 +65,8 @@ export default function ProjectCard({ data, isAdmin }: ProjectCardProps) {
             {/* 2. Контент картки */}
             <div className="p-6 flex flex-col flex-grow space-y-4">
 
-                {/* Назва */}
-                <h3 className="text-xl font-bold text-gray-900">
+                {/* Назва (Текст білий) */}
+                <h3 className="text-xl font-bold text-white">
                     <EditableText
                         initialValue={project.title}
                         isEditing={isAdmin}
@@ -76,30 +74,32 @@ export default function ProjectCard({ data, isAdmin }: ProjectCardProps) {
                     />
                 </h3>
 
-                {/* Теги (Вводимо через кому, відображаємо як бейджі) */}
+                {/* Теги */}
                 <div className="flex flex-wrap gap-2">
                     {isAdmin ? (
                         <div className="w-full">
-                            <span className="text-xs text-gray-400 block mb-1">Теги (через кому):</span>
+                            <span className="text-xs text-slate-400 block mb-1">Теги (через кому):</span>
                             <EditableText
                                 initialValue={project.tags.join(", ")}
                                 isEditing={true}
                                 onSave={(val) => handleSave("tags", val.split(",").map(t => t.trim()) as any)}
-                                className="text-sm text-blue-600 w-full"
+                                // Стиль інпуту тегів для адміна
+                                className="text-sm text-sky-400 w-full bg-slate-900/50 p-1 rounded border border-slate-600"
                             />
                         </div>
 
                     ) : (
                         project.tags.map((tag, i) => (
-                            <span key={i} className="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full font-medium">
+                            // Бейджі: Темний фон, світлий текст
+                            <span key={i} className="px-3 py-1 bg-slate-700 text-slate-200 text-xs rounded-full font-medium border border-slate-600">
                                 {tag}
                             </span>
                         ))
                     )}
                 </div>
 
-                {/* Опис */}
-                <div className="text-gray-600 text-sm leading-relaxed flex-grow">
+                {/* Опис (Текст сірий) */}
+                <div className="text-slate-300 text-sm leading-relaxed flex-grow">
                     <EditableText
                         initialValue={project.description}
                         isEditing={isAdmin}
@@ -108,25 +108,26 @@ export default function ProjectCard({ data, isAdmin }: ProjectCardProps) {
                     />
                 </div>
 
-                {/* Посилання (Футер картки) */}
-                <div className="pt-4 border-t border-gray-100 flex gap-4 mt-auto">
+                {/* Посилання (Футер) - Рамка зверху темна */}
+                <div className="pt-4 border-t border-slate-700 flex gap-4 mt-auto">
+
                     {/* Посилання на сайт */}
-                    <div className="flex items-center gap-2 text-sm font-medium text-blue-600">
+                    <div className="flex items-center gap-2 text-sm font-medium text-sky-400 hover:text-sky-300 transition-colors">
                         <ExternalLink size={16} />
                         {isAdmin ? (
                             <EditableText
                                 initialValue={project.link}
                                 isEditing={true}
                                 onSave={(val) => handleSave("link", val)}
-                                className="w-full"
+                                className="w-full min-w-[100px]"
                             />
                         ) : (
                             <a href={project.link} target="_blank" className="hover:underline">Live Demo</a>
                         )}
                     </div>
 
-                    {/* Посилання на GitHub (опціонально) */}
-                    <div className="flex items-center gap-2 text-sm font-medium text-gray-700 ml-auto">
+                    {/* Посилання на GitHub */}
+                    <div className="flex items-center gap-2 text-sm font-medium text-slate-400 hover:text-white transition-colors ml-auto">
                         <Github size={16} />
                         {isAdmin ? (
                             <EditableText

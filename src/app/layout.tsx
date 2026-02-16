@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "@/context/AuthContext"; // <--- Імпорт
+import { AuthProvider } from "@/context/AuthContext";
 
-const inter = Inter({ subsets: ["latin"] });
+// Налаштовуємо змінну шрифту
+const inter = Inter({ 
+  subsets: ["latin", "cyrillic"],
+  variable: "--font-inter", // <--- Це важливо
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "My Portfolio",
@@ -17,8 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="uk">
-      <body className={inter.className}>
-        {/* Обгортаємо весь сайт в AuthProvider */}
+      <body className={`${inter.variable} antialiased`}>
         <AuthProvider>
           {children}
         </AuthProvider>
