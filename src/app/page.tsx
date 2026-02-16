@@ -11,7 +11,7 @@ export default function Home() {
   const isAdmin = !!user; // Якщо юзер є — значить це адмін (true), якщо ні — false
 
   return (
-    <main className="relative min-h-screen bg-white">
+    <main className="relative min-h-screen bg-#0f172a">
       
       {/* Панель адміна (показуємо ТІЛЬКИ якщо залогінені) */}
       {isAdmin && (
