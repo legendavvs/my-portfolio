@@ -49,48 +49,53 @@ export default function Experience({ isAdmin }: { isAdmin?: boolean }) { // До
     };
 
     return (
-        <section className="py-24 px-6 md:px-20 max-w-3xl mx-auto">
-            <div className="flex justify-between items-center mb-16">
-                <h2 className="text-4xl font-bold text-white text-center w-full">Шлях & Досвід</h2>
+        // 1. БУЛО: max-w-3xl -> СТАЛО: max-w-7xl (щоб розтягнути секцію на всю ширину як інші)
+        <section className="py-24 px-6 md:px-20 max-w-7xl mx-auto">
+
+            {/* 2. ДОДАНО: w-full (щоб блок заголовка зайняв всю ширину) */}
+            <div className="w-full flex justify-between items-center mb-16">
+                {/* Заголовок тепер буде зліва, бо контейнер широкий */}
+                <h2 className="text-4xl md:text-4xl font-bold text-white text-left">Шлях & Досвід</h2>
+
                 {isAdmin && (
-                    <button onClick={handleAdd} className="absolute right-6 md:right-20 p-2 bg-sky-600 rounded-full hover:bg-sky-500 transition shadow-lg">
-                        <Plus size={24} text-white />
+                    <button onClick={handleAdd} className="p-2 bg-sky-600 rounded-lg hover:bg-sky-500 transition shadow-lg text-white">
+                        <Plus size={24} />
                     </button>
                 )}
             </div>
 
-            <div className="relative border-l-2 border-white/10 ml-4 space-y-12">
-                {items.map((item) => (
-                    <div key={item.id} className="relative pl-12 group">
+            {/* 3. Огорнули список у max-w-3xl, щоб самі картки не були розтягнуті на весь екран, але були зліва */}
+            <div className="max-w-3xl">
+                <div className="relative border-l-2 border-white/10 ml-4 space-y-12">
+                    {items.map((item) => (
+                        <div key={item.id} className="relative pl-12 group">
 
-                        {/* Точка на лінії */}
-                        <div className="absolute left-[-9px] top-1 w-4 h-4 bg-sky-500 rounded-full shadow-[0_0_15px_rgba(14,165,233,0.6)] border-4 border-[#0f172a]"></div>
+                            <div className="absolute left-[-9px] top-1 w-4 h-4 bg-sky-500 rounded-full shadow-[0_0_15px_rgba(14,165,233,0.6)] border-4 border-[#0f172a]"></div>
 
-                        {/* Рік (Редагується) */}
-                        <div className="inline-block px-3 py-1 bg-sky-500/10 text-sky-400 text-sm font-bold rounded-full mb-3 border border-sky-500/20">
-                            <EditableText initialValue={item.year} isEditing={!!isAdmin} onSave={(v) => handleSave(item.id, "year", v)} />
-                        </div>
+                            <div className="inline-block px-3 py-1 bg-sky-500/10 text-sky-400 text-sm font-bold rounded-full mb-3 border border-sky-500/20">
+                                <EditableText initialValue={item.year} isEditing={!!isAdmin} onSave={(v) => handleSave(item.id, "year", v)} />
+                            </div>
 
-                        {/* Картка (Редагується) */}
-                        <div className="glass-panel p-6 rounded-2xl border border-white/5 hover:border-sky-500/30 transition-all relative">
-                            {isAdmin && (
-                                <button
-                                    onClick={() => handleDelete(item.id)}
-                                    className="absolute top-4 right-4 text-red-400 hover:text-red-300 opacity-0 group-hover:opacity-100 transition"
-                                >
-                                    <Trash2 size={18} />
-                                </button>
-                            )}
+                            <div className="glass-panel p-6 rounded-2xl border border-white/5 hover:border-sky-500/30 transition-all relative">
+                                {isAdmin && (
+                                    <button
+                                        onClick={() => handleDelete(item.id)}
+                                        className="absolute top-4 right-4 text-red-400 hover:text-red-300 opacity-0 group-hover:opacity-100 transition"
+                                    >
+                                        <Trash2 size={18} />
+                                    </button>
+                                )}
 
-                            <h3 className="text-xl font-bold text-white mb-2 group-hover:text-sky-400 transition-colors">
-                                <EditableText initialValue={item.title} isEditing={!!isAdmin} onSave={(v) => handleSave(item.id, "title", v)} />
-                            </h3>
-                            <div className="text-slate-400 text-sm leading-relaxed">
-                                <EditableText initialValue={item.desc} isEditing={!!isAdmin} onSave={(v) => handleSave(item.id, "desc", v)} multiline />
+                                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-sky-400 transition-colors">
+                                    <EditableText initialValue={item.title} isEditing={!!isAdmin} onSave={(v) => handleSave(item.id, "title", v)} />
+                                </h3>
+                                <div className="text-slate-400 text-sm leading-relaxed">
+                                    <EditableText initialValue={item.desc} isEditing={!!isAdmin} onSave={(v) => handleSave(item.id, "desc", v)} multiline />
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
         </section>
     );
