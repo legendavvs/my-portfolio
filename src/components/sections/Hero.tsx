@@ -7,97 +7,104 @@ import EditableText from "@/components/admin/EditableText";
 import ImageUploader from "@/components/admin/ImageUploader";
 import { HeroData } from "@/types";
 
-const DEFAULT_DATA: HeroData = {
-    title: "Full-Stack Developer",
-    subtitle: "Створюю цифрові рішення",
-    description: "Я розробляю сучасні веб-додатки, фокусуючись на швидкості, дизайні та зручності користування.",
-    imageUrl: "",
-};
+// Додаємо поле techStack в тип (якщо його немає в types.ts, воно тут локально обробиться, але краще додай в types)
+interface ExtendedHeroData extends HeroData {
+    techStack?: string;
+}
+
+const DEFAULT_STACK = "React, Next.js, TypeScript, TailwindCSS, Firebase, Figma, Node.js, Git";
 
 export default function Hero({ isAdmin }: { isAdmin: boolean }) {
-    const [data, setData] = useState<HeroData>(DEFAULT_DATA);
+    const [data, setData] = useState<ExtendedHeroData>({
+        title: "Full-Stack Developer",
+        subtitle: "Створюю цифрові рішення",
+        description: "Я розробляю сучасні веб-додатки...",
+        imageUrl: "",
+        techStack: DEFAULT_STACK,
+    });
 
     useEffect(() => {
         const unsubscribe = onSnapshot(doc(db, "content", "hero"), (docSnap) => {
-            if (docSnap.exists()) setData(docSnap.data() as HeroData);
+            if (docSnap.exists()) {
+                const docData = docSnap.data() as ExtendedHeroData;
+                // Якщо в базі ще немає techStack, ставимо дефолтний
+                setData({ ...docData, techStack: docData.techStack || DEFAULT_STACK });
+            }
         });
         return () => unsubscribe();
     }, []);
 
-    const handleSave = async (key: keyof HeroData, value: string) => {
+    const handleSave = async (key: keyof ExtendedHeroData, value: string) => {
         const newData = { ...data, [key]: value };
         setData(newData);
         await setDoc(doc(db, "content", "hero"), newData, { merge: true });
     };
 
-    // Функція для плавного скролу до секцій
-    const scrollToSection = (id: string) => {
-        const element = document.getElementById(id);
-        if (element) {
-            element.scrollIntoView({ behavior: "smooth" });
-        }
-    };
+    // Розбиваємо рядок на масив для анімації
+    const techArray = (data.techStack || DEFAULT_STACK).split(",").map(t => t.trim());
+    // Дублюємо масив кілька разів для безшовної анімації
+    const marqueeItems = [...techArray, ...techArray, ...techArray, ...techArray];
 
     return (
-        <section className="min-h-screen flex items-center justify-center px-6 md:px-20 py-20 bg-slate-900">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center max-w-7xl w-full">
+        <section className="min-h-screen flex flex-col justify-center relative overflow-hidden pt-32 pb-20">
+
+            {/* Основний контент */}
+            <div className="px-6 md:px-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto w-full z-10">
 
                 {/* Текст */}
-                <div className="space-y-6">
-                    <h2 className="text-xl md:text-2xl text-sky-400 font-semibold tracking-wide uppercase">
-                        <EditableText
-                            initialValue={data.subtitle}
-                            isEditing={isAdmin}
-                            onSave={(val) => handleSave("subtitle", val)}
-                        />
+                <div className="space-y-8 relative z-20">
+                    <h2 className="text-lg md:text-xl text-sky-400 font-bold tracking-widest uppercase">
+                        <EditableText initialValue={data.subtitle} isEditing={isAdmin} onSave={(val) => handleSave("subtitle", val)} />
                     </h2>
 
-                    <h1 className="text-5xl md:text-7xl font-bold text-slate-50 leading-tight">
-                        <EditableText
-                            initialValue={data.title}
-                            isEditing={isAdmin}
-                            onSave={(val) => handleSave("title", val)}
-                        />
+                    <h1 className="text-5xl md:text-7xl font-extrabold text-white leading-[1.1] tracking-tight">
+                        <EditableText initialValue={data.title} isEditing={isAdmin} onSave={(val) => handleSave("title", val)} />
                     </h1>
 
-                    <div className="text-lg md:text-xl text-slate-400 leading-relaxed max-w-lg">
-                        <EditableText
-                            initialValue={data.description}
-                            isEditing={isAdmin}
-                            onSave={(val) => handleSave("description", val)}
-                            multiline
-                        />
-                    </div>
-
-                    <div className="flex gap-4 pt-4">
-                        <button
-                            onClick={() => scrollToSection("projects")}
-                            className="px-8 py-3 bg-sky-600 text-white rounded-lg font-medium hover:bg-sky-500 transition shadow-lg shadow-sky-900/20"
-                        >
-                            Мої роботи
-                        </button>
-                        <button
-                            onClick={() => scrollToSection("contact")}
-                            className="px-8 py-3 border border-slate-700 text-slate-300 rounded-lg font-medium hover:bg-slate-800 transition"
-                        >
-                            Контакти
-                        </button>
+                    <div className="text-lg text-slate-300 leading-relaxed max-w-lg border-l-4 border-sky-500 pl-6 bg-white/5 py-2 rounded-r-lg backdrop-blur-sm">
+                        <EditableText initialValue={data.description} isEditing={isAdmin} onSave={(val) => handleSave("description", val)} multiline />
                     </div>
                 </div>
 
                 {/* Фото */}
-                <div className="flex justify-center md:justify-end">
-                    <div className="w-full max-w-md aspect-square bg-slate-800 rounded-3xl overflow-hidden border border-slate-700 shadow-2xl relative">
-                        <div className="absolute inset-0 bg-gradient-to-tr from-sky-500/10 to-purple-500/10 pointer-events-none"></div>
+                <div className="flex justify-center lg:justify-end relative z-10">
+                    <div className="w-full max-w-[400px] aspect-square glass-panel rounded-[2rem] overflow-hidden relative border border-white/10 shadow-2xl">
+                        <div className="absolute inset-0 bg-slate-800/50"></div>
                         <ImageUploader
                             currentImageUrl={data.imageUrl}
                             isEditing={isAdmin}
                             onSave={(url) => handleSave("imageUrl", url)}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover relative z-10"
                         />
                     </div>
                 </div>
+            </div>
 
+            {/* MARQUEE */}
+            <div className="w-full mt-auto pt-20 pb-10">
+                {/* Поле редагування для адміна */}
+                {isAdmin && (
+                    <div className="max-w-7xl mx-auto px-6 mb-2">
+                        <span className="text-xs text-sky-400 mb-1 block">Редагувати список технологій (через кому):</span>
+                        <EditableText
+                            initialValue={data.techStack || ""}
+                            isEditing={true}
+                            onSave={(val) => handleSave("techStack", val)}
+                            className="w-full bg-slate-800 border border-sky-500/50 p-2 rounded text-sm text-white"
+                        />
+                    </div>
+                )}
+
+                {/* Сама лінія: items-center для вертикального центрування */}
+                <div className="border-t border-white/5 bg-black/20 overflow-hidden relative h-24 flex items-center">
+                    <div className="flex w-max animate-scroll gap-16 items-center">
+                        {marqueeItems.map((tech, i) => (
+                            <span key={i} className="text-4xl md:text-6xl font-bold text-white/10 uppercase whitespace-nowrap select-none">
+                                {tech}
+                            </span>
+                        ))}
+                    </div>
+                </div>
             </div>
         </section>
     );
