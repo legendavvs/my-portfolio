@@ -33,7 +33,7 @@ export default function Projects({ isAdmin }: { isAdmin: boolean }) {
 
     return (
         // ЗМІНА ТУТ: Додав bg-slate-900, щоб точно було темно
-        <section className="py-24 px-6 md:px-20 max-w-7xl mx-auto bg-slate-900" id="projects">
+        <section className="py-24 px-6 md:px-20 max-w-7xl mx-auto" id="projects">
             <div className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                 <div>
                     {/* Заголовок тепер білий (text-slate-50) */}
