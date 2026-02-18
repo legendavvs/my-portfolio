@@ -12,42 +12,72 @@ html {
 }
 
 body {
-  background-color: #0f172a;
+  background-color: #0f172a; /* Темна підкладка */
   color: #f8fafc;
   font-family: 'Montserrat', sans-serif !important;
-  background-image: 
-    radial-gradient(circle at 15% 50%, rgba(56, 189, 248, 0.05), transparent 25%), 
-    radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.05), transparent 25%);
+  position: relative;
+  overflow-x: hidden; /* Щоб плями не розтягували сторінку */
 }
 
-input, textarea, button, select {
-  font-family: 'Montserrat', sans-serif !important;
-  background-color: transparent;
-  outline: none;
-  color: inherit;
+/* --- АНІМОВАНИЙ ФОН (Mesh Gradient) --- */
+/* Плями будуть створені через фіксовані div-и в layout.tsx, 
+   але тут ми опишемо анімацію руху */
+@keyframes float {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
 }
 
+.blob {
+  position: absolute;
+  filter: blur(80px); /* Сильне розмиття */
+  z-index: -1; /* На задній план */
+  opacity: 0.6;
+  animation: float 10s infinite ease-in-out;
+}
+
+/* --- GLASSHMORPHISM v2.0 (Premium) --- */
 .glass-panel {
-  background: rgba(15, 23, 42, 0.75); 
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  background: rgba(15, 23, 42, 0.6); /* Більш прозорий */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  /* Додаємо легкий шум для текстури (опціонально, але виглядає дорого) */
 }
 
+/* Ефект при наведенні на картку */
+.glass-card {
+  transition: all 0.3s ease;
+}
 .glass-card:hover {
-  background: rgba(30, 41, 59, 0.9);
-  border-color: rgba(56, 189, 248, 0.4);
-  box-shadow: 0 0 25px rgba(56, 189, 248, 0.1);
-  transform: translateY(-2px);
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(56, 189, 248, 0.3); /* Sky Blue Border */
+  box-shadow: 0 0 30px rgba(56, 189, 248, 0.15); /* Світіння */
+  transform: translateY(-5px);
 }
 
-/* --- UPDATE: 60s для повільнішого скролу --- */
+/* --- Анімація рядка (Marquee) --- */
 @keyframes scroll {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
-
 .animate-scroll {
   animation: scroll 60s linear infinite;
+}
+
+/* Прибираємо скролбар для краси, але скрол працює */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0f172a; 
+}
+::-webkit-scrollbar-thumb {
+  background: #334155; 
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569; 
 }

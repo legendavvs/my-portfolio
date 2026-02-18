@@ -6,8 +6,9 @@ import { db } from "@/lib/firebase";
 import EditableText from "@/components/admin/EditableText";
 import ImageUploader from "@/components/admin/ImageUploader";
 import { HeroData } from "@/types";
+// Імпорт частинок
+import ParticlesContainer from "@/components/ui/ParticlesContainer";
 
-// Додаємо поле techStack в тип (якщо його немає в types.ts, воно тут локально обробиться, але краще додай в types)
 interface ExtendedHeroData extends HeroData {
     techStack?: string;
 }
@@ -15,6 +16,7 @@ interface ExtendedHeroData extends HeroData {
 const DEFAULT_STACK = "React, Next.js, TypeScript, TailwindCSS, Firebase, Figma, Node.js, Git";
 
 export default function Hero({ isAdmin }: { isAdmin: boolean }) {
+    // ... (весь твій код зі станом data і useEffect залишається без змін) ...
     const [data, setData] = useState<ExtendedHeroData>({
         title: "Full-Stack Developer",
         subtitle: "Створюю цифрові рішення",
@@ -23,11 +25,11 @@ export default function Hero({ isAdmin }: { isAdmin: boolean }) {
         techStack: DEFAULT_STACK,
     });
 
+    // ... (handleSave і useEffect без змін) ...
     useEffect(() => {
         const unsubscribe = onSnapshot(doc(db, "content", "hero"), (docSnap) => {
             if (docSnap.exists()) {
                 const docData = docSnap.data() as ExtendedHeroData;
-                // Якщо в базі ще немає techStack, ставимо дефолтний
                 setData({ ...docData, techStack: docData.techStack || DEFAULT_STACK });
             }
         });
@@ -40,17 +42,21 @@ export default function Hero({ isAdmin }: { isAdmin: boolean }) {
         await setDoc(doc(db, "content", "hero"), newData, { merge: true });
     };
 
-    // Розбиваємо рядок на масив для анімації
     const techArray = (data.techStack || DEFAULT_STACK).split(",").map(t => t.trim());
-    // Дублюємо масив кілька разів для безшовної анімації
     const marqueeItems = [...techArray, ...techArray, ...techArray, ...techArray];
 
     return (
         <section className="min-h-screen flex flex-col justify-center relative overflow-hidden pt-32 pb-20">
 
-            {/* Основний контент */}
+            {/* 2. ЧАСТИНКИ (Абсолютне позиціонування на фоні секції) */}
+            <div className="absolute inset-0 z-0">
+                <ParticlesContainer />
+            </div>
+
+            {/* Основний контент (z-10 щоб був над частинками) */}
             <div className="px-6 md:px-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto w-full z-10">
 
+                {/* ... (Всі твої тексти і фото залишаються без змін) ... */}
                 {/* Текст */}
                 <div className="space-y-8 relative z-20">
                     <h2 className="text-lg md:text-xl text-sky-400 font-bold tracking-widest uppercase">
@@ -80,9 +86,8 @@ export default function Hero({ isAdmin }: { isAdmin: boolean }) {
                 </div>
             </div>
 
-            {/* MARQUEE */}
-            <div className="w-full mt-auto pt-20 pb-10">
-                {/* Поле редагування для адміна */}
+            {/* MARQUEE (z-20 щоб був над усім) */}
+            <div className="w-full mt-auto pt-20 pb-10 z-20 relative">
                 {isAdmin && (
                     <div className="max-w-7xl mx-auto px-6 mb-2">
                         <span className="text-xs text-sky-400 mb-1 block">Редагувати список технологій (через кому):</span>
@@ -95,8 +100,7 @@ export default function Hero({ isAdmin }: { isAdmin: boolean }) {
                     </div>
                 )}
 
-                {/* Сама лінія: items-center для вертикального центрування */}
-                <div className="border-t border-white/5 bg-black/20 overflow-hidden relative h-24 flex items-center">
+                <div className="border-t border-white/5 bg-black/20 overflow-hidden relative h-24 flex items-center backdrop-blur-sm">
                     <div className="flex w-max animate-scroll gap-16 items-center">
                         {marqueeItems.map((tech, i) => (
                             <span key={i} className="text-4xl md:text-6xl font-bold text-white/10 uppercase whitespace-nowrap select-none">
