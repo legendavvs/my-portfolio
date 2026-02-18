@@ -81,3 +81,23 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #475569; 
 }
+
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important; /* Вимикаємо нативний smooth scroll */
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none; /* Щоб iframe не перехоплювали скрол під час руху */
+}

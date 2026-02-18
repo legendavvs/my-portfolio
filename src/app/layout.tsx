@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 // Імпортуємо нові компоненти
 import BackgroundBlobs from "@/components/ui/BackgroundBlobs";
+import SmoothScroll from "@/components/ui/SmoothScroll";
 
 // Налаштування шрифту (якщо ти використовуєш змінні)
 const inter = Inter({
@@ -29,6 +30,7 @@ export default function RootLayout({
         suppressHydrationWarning={true}
       >
         <AuthProvider>
+          <SmoothScroll />
           {/* 1. Фонові плями (на весь сайт, фіксовані) */}
           <BackgroundBlobs />
 
