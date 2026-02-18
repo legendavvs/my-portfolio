@@ -9,6 +9,8 @@ interface EditableTextProps {
     onSave: (newValue: string) => void;
     className?: string;
     multiline?: boolean;
+    // ДОДАНО: Типізація для onClick
+    onClick?: (e: React.MouseEvent) => void;
 }
 
 export default function EditableText({
@@ -17,6 +19,7 @@ export default function EditableText({
     onSave,
     className,
     multiline = false,
+    onClick, // ДОДАНО: Деструктуризація
 }: EditableTextProps) {
     const [value, setValue] = useState(initialValue);
 
@@ -36,6 +39,8 @@ export default function EditableText({
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
                     onBlur={() => onSave(value)}
+                    // ДОДАНО: Передаємо клік далі
+                    onClick={onClick}
                     className={clsx(commonClasses, "rounded-lg border-2 border-dashed border-slate-600 focus:border-sky-500")}
                     rows={4}
                 />
@@ -48,10 +53,13 @@ export default function EditableText({
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 onBlur={() => onSave(value)}
+                // ДОДАНО: Передаємо клік далі
+                onClick={onClick}
                 className={commonClasses}
             />
         );
     }
 
-    return <span className={className}>{value}</span>;
+    // ДОДАНО: Передаємо клік і сюди (для span)
+    return <span className={className} onClick={onClick}>{value}</span>;
 }
